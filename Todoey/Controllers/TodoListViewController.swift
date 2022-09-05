@@ -7,21 +7,23 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
 
     var itemArray = [Item]()
     
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //print(dataFilePath)
+        print( )
 
-        loadItems()
+//        loadItems()
 
-    }
+    } 
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
@@ -68,9 +70,10 @@ class TodoListViewController: UITableViewController {
             
             if textField.text != "" {
                 
-                let newItem = Item()
-                newItem.title = textField.text!
+                let newItem = Item(context: self.context)
                 
+                newItem.title = textField.text!
+                newItem.isDone = false
                 self.itemArray.append(newItem)
                 self.saveItems()
                 
@@ -83,25 +86,21 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    func loadItems() {
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            
-            do {
-                try itemArray = decoder.decode([Item].self, from: data)
-            } catch {
-                print(error)
-            }
-            
-        }
-    }
+//    func loadItems() {
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//
+//            do {
+//                try context.save()
+//            } catch {
+//                print("Error saving context \(error)")
+//            }
+//
+//        }
+//    }
     
     func saveItems() {
-        let encoder = PropertyListEncoder()
-        
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try context.save()
         } catch {
             print(error)
         }
