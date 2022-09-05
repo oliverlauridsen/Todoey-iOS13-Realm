@@ -18,10 +18,8 @@ class TodoListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        print( )
 
-//        loadItems()
+        loadItems()
 
     } 
     
@@ -45,8 +43,15 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {        
         
-        itemArray[indexPath.row].isDone = !itemArray[indexPath.row].isDone
+         itemArray[indexPath.row].isDone = !itemArray[indexPath.row].isDone
+        
+        // IMPORTANT, CALL THIS FIRST TO NOT BREAK
+//        context.delete(itemArray[indexPath.row])
+//        itemArray.remove(at: indexPath.row)
+
+        
         tableView.reloadData()
+        
         saveItems()
 
         tableView.deselectRow(at: indexPath, animated: true)
@@ -77,7 +82,6 @@ class TodoListViewController: UITableViewController {
                 self.itemArray.append(newItem)
                 self.saveItems()
                 
-                self.tableView.reloadData()
 
             }
         }
@@ -86,17 +90,16 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
     }
     
-//    func loadItems() {
-//        if let data = try? Data(contentsOf: dataFilePath!) {
-//
-//            do {
-//                try context.save()
-//            } catch {
-//                print("Error saving context \(error)")
-//            }
-//
-//        }
-//    }
+    func loadItems() {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print(error)
+        }
+        
+    }
     
     func saveItems() {
         do {
@@ -104,7 +107,7 @@ class TodoListViewController: UITableViewController {
         } catch {
             print(error)
         }
+        tableView.reloadData()
     }
-    
 }
 
