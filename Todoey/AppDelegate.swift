@@ -17,8 +17,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String
-        )
+//        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String
+//        )
+        if #available(iOS 15, *) {
+            let navigationBarAppearance = UINavigationBarAppearance()
+            navigationBarAppearance.configureWithOpaqueBackground()
+            navigationBarAppearance.titleTextAttributes = [
+                NSAttributedString.Key.foregroundColor : UIColor.white
+            ]
+            navigationBarAppearance.backgroundColor = UIColor.purple
+            UINavigationBar.appearance().standardAppearance = navigationBarAppearance
+            UINavigationBar.appearance().compactAppearance = navigationBarAppearance
+            UINavigationBar.appearance().scrollEdgeAppearance = navigationBarAppearance
+                    
+            let tabBarApperance = UITabBarAppearance()
+            tabBarApperance.configureWithOpaqueBackground()
+            tabBarApperance.backgroundColor = UIColor.white
+            UITabBar.appearance().scrollEdgeAppearance = tabBarApperance
+            UITabBar.appearance().standardAppearance = tabBarApperance
+        }
+
         return true
     }
 
